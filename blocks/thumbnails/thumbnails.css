@@ -6,17 +6,49 @@
     padding: 24px 0;
     background-color: transparent;
     width: 100%;
+    box-sizing: border-box;
+  
+    @media (max-width: 640px) {
+      padding: 16px 0;
+    }
   }
   
   .thumbnails-grid {
     width: 100%;
-    max-width: none;
+    max-width: 100%;
     margin: 0;
     padding: 0 24px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 40px 16px;
     box-sizing: border-box;
+  
+    @media (min-width: 1900px) {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 40px 24px;
+    }
+  
+    @media (min-width: 1440px) and (max-width: 1899px) {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px 20px;
+    }
+  
+    @media (min-width: 1025px) and (max-width: 1439px) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px 16px;
+    }
+  
+    @media (min-width: 641px) and (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px 16px;
+      padding: 0 16px;
+    }
+  
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 0 12px;
+    }
   }
   
   /* ==============================
@@ -30,10 +62,21 @@
     cursor: pointer;
     transition: transform 0.2s ease;
     background: transparent;
-  }
   
-  .thumbnail-card:hover {
-    transform: translateY(-4px);
+    &:hover {
+      transform: translateY(-4px);
+  
+      .thumbnail-image-wrapper {
+        img,
+        picture img {
+          transform: scale(1.05);
+        }
+      }
+  
+      .thumbnail-channel {
+        color: #0f0f0f;
+      }
+    }
   }
   
   /* ==============================
@@ -48,20 +91,19 @@
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 12px;
-  }
   
-  .thumbnail-image-wrapper picture,
-  .thumbnail-image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
-  }
+    picture,
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
   
-  .thumbnail-card:hover .thumbnail-image-wrapper img,
-  .thumbnail-card:hover .thumbnail-image-wrapper picture img {
-    transform: scale(1.05);
+    @media (max-width: 640px) {
+      border-radius: 8px;
+    }
   }
   
   /* ==============================
@@ -72,6 +114,10 @@
     display: flex;
     gap: 12px;
     align-items: flex-start;
+  
+    @media (max-width: 640px) {
+      gap: 10px;
+    }
   }
   
   /* ==============================
@@ -83,9 +129,29 @@
     width: 36px;
     height: 36px;
     overflow: hidden;
+  
+    picture,
+    img,
+    .avatar-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+  
+    @media (max-width: 640px) {
+      width: 32px;
+      height: 32px;
+  
+      picture,
+      .avatar-image {
+        width: 32px;
+        height: 32px;
+      }
+    }
   }
   
-  /* Auto-generated avatar circle */
   .avatar-circle {
     width: 36px;
     height: 36px;
@@ -100,17 +166,12 @@
     text-transform: uppercase;
     font-family: 'Roboto', Arial, sans-serif;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
   
-  /* Custom avatar image */
-  .thumbnail-avatar picture,
-  .thumbnail-avatar img,
-  .avatar-image {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
+    @media (max-width: 640px) {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
   }
   
   /* ==============================
@@ -119,7 +180,7 @@
   
   .thumbnail-details {
     flex: 1;
-    min-width: 0; /* Allows text truncation */
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -138,6 +199,16 @@
     text-overflow: ellipsis;
     font-family: 'Roboto', Arial, sans-serif;
     word-break: break-word;
+  
+    @media (min-width: 641px) and (max-width: 1024px) {
+      font-size: 15px;
+      line-height: 20px;
+    }
+  
+    @media (max-width: 640px) {
+      font-size: 14px;
+      line-height: 20px;
+    }
   }
   
   .thumbnail-channel {
@@ -150,228 +221,19 @@
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.2s ease;
-  }
   
-  .thumbnail-card:hover .thumbnail-channel {
-    color: #0f0f0f;
-  }
-  
-  /* Optional: Video metadata (views, date, etc.) */
-  .thumbnail-meta {
-    margin: 0;
-    font-size: 14px;
-    color: #606060;
-    line-height: 20px;
-    font-family: 'Roboto', Arial, sans-serif;
-  }
-  
-  /* ==============================
-     RESPONSIVE LAYOUTS
-     ============================== */
-  
-  /* Extra Large Screens (5+ columns) */
-  @media (min-width: 1900px) {
-    .thumbnails-grid {
-      grid-template-columns: repeat(5, 1fr);
-      gap: 40px 24px;
-    }
-  }
-  
-  /* Large Screens (4 columns) */
-  @media (min-width: 1440px) and (max-width: 1899px) {
-    .thumbnails-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 40px 20px;
-    }
-  }
-  
-  /* Medium Desktop (3 columns) */
-  @media (min-width: 1025px) and (max-width: 1439px) {
-    .thumbnails-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px 16px;
-    }
-  }
-  
-  /* Tablet (2 columns) */
-  @media (min-width: 641px) and (max-width: 1024px) {
-    .thumbnails-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 32px 16px;
-      padding: 0 16px;
-    }
-  
-    .thumbnail-title {
-      font-size: 15px;
-      line-height: 20px;
-    }
-  
-    .thumbnail-channel {
+    @media (min-width: 641px) and (max-width: 1024px) {
       font-size: 13px;
     }
-  }
   
-  /* Mobile (1 column) */
-  @media (max-width: 640px) {
-    .thumbnails {
-      padding: 16px 0;
-    }
-  
-    .thumbnails-grid {
-      grid-template-columns: 1fr;
-      gap: 24px;
-      padding: 0 12px;
-    }
-  
-    .thumbnail-info {
-      gap: 10px;
-    }
-  
-    .thumbnail-avatar,
-    .avatar-circle,
-    .thumbnail-avatar picture,
-    .thumbnail-avatar .avatar-image {
-      width: 32px;
-      height: 32px;
-    }
-  
-    .avatar-circle {
-      font-size: 14px;
-    }
-  
-    .thumbnail-title {
-      font-size: 14px;
-      line-height: 20px;
-    }
-  
-    .thumbnail-channel,
-    .thumbnail-meta {
+    @media (max-width: 640px) {
       font-size: 12px;
       line-height: 18px;
     }
-  
-    .thumbnail-image-wrapper {
-      border-radius: 8px;
-    }
   }
   
   /* ==============================
-     DARK MODE SUPPORT (IMPROVED)
-     ============================== */
-  
-  /* Dark mode via html.dark class (primary method) */
-  html.dark .thumbnails {
-    background-color: transparent;
-  }
-  
-  html.dark .thumbnail-image-wrapper {
-    background-color: #272727;
-  }
-  
-  html.dark .thumbnail-title {
-    color: #f1f1f1;
-  }
-  
-  html.dark .thumbnail-channel,
-  html.dark .thumbnail-meta {
-    color: #aaaaaa;
-  }
-  
-  html.dark .thumbnail-card:hover .thumbnail-channel {
-    color: #ffffff;
-  }
-  
-  html.dark .avatar-circle {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* System preference dark mode (fallback) */
-  @media (prefers-color-scheme: dark) {
-    body:not(.light-mode) .thumbnail-image-wrapper {
-      background-color: #272727;
-    }
-  
-    body:not(.light-mode) .thumbnail-title {
-      color: #f1f1f1;
-    }
-  
-    body:not(.light-mode) .thumbnail-channel,
-    body:not(.light-mode) .thumbnail-meta {
-      color: #aaaaaa;
-    }
-  
-    body:not(.light-mode) .thumbnail-card:hover .thumbnail-channel {
-      color: #ffffff;
-    }
-  }
-  
-  /* Legacy dark mode classes (for compatibility) */
-  body.dark-mode .thumbnail-image-wrapper,
-  body.dark .thumbnail-image-wrapper,
-  body.appear.dark .thumbnail-image-wrapper {
-    background-color: #272727;
-  }
-  
-  body.dark-mode .thumbnail-title,
-  body.dark .thumbnail-title,
-  body.appear.dark .thumbnail-title {
-    color: #f1f1f1;
-  }
-  
-  body.dark-mode .thumbnail-channel,
-  body.dark-mode .thumbnail-meta,
-  body.dark .thumbnail-channel,
-  body.dark .thumbnail-meta,
-  body.appear.dark .thumbnail-channel,
-  body.appear.dark .thumbnail-meta {
-    color: #aaaaaa;
-  }
-  
-  body.dark-mode .thumbnail-card:hover .thumbnail-channel,
-  body.dark .thumbnail-card:hover .thumbnail-channel,
-  body.appear.dark .thumbnail-card:hover .thumbnail-channel {
-    color: #ffffff;
-  }
-  
-  /* ==============================
-     LOADING STATES (Optional)
-     ============================== */
-  
-  .thumbnail-card.loading .thumbnail-image-wrapper {
-    background: linear-gradient(
-      90deg,
-      #f0f0f0 0%,
-      #e0e0e0 50%,
-      #f0f0f0 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-  }
-  
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
-  }
-  
-  html.dark .thumbnail-card.loading .thumbnail-image-wrapper,
-  body.dark-mode .thumbnail-card.loading .thumbnail-image-wrapper,
-  body.dark .thumbnail-card.loading .thumbnail-image-wrapper {
-    background: linear-gradient(
-      90deg,
-      #272727 0%,
-      #3a3a3a 50%,
-      #272727 100%
-    );
-    background-size: 200% 100%;
-  }
-  
-  /* ==============================
-     NO RESULTS MESSAGE (for search)
+     NO RESULTS MESSAGE
      ============================== */
   
   .no-results-message {
@@ -383,56 +245,113 @@
   .no-results-content {
     max-width: 400px;
     margin: 0 auto;
+  
+    svg {
+      width: 80px;
+      height: 80px;
+      color: #ccc;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+  
+    h2 {
+      font-size: 24px;
+      font-weight: 500;
+      color: #0f0f0f;
+      margin: 0 0 12px 0;
+    }
+  
+    p {
+      font-size: 16px;
+      color: #606060;
+      margin: 8px 0;
+    }
+  
+    .search-query {
+      font-size: 14px;
+      color: #888;
+      margin-top: 16px;
+  
+      strong {
+        color: #0f0f0f;
+      }
+    }
   }
   
-  .no-results-content svg {
-    width: 80px;
-    height: 80px;
-    color: #ccc;
-    margin-bottom: 20px;
-    opacity: 0.5;
+  /* ==============================
+     DARK MODE SUPPORT
+     ============================== */
+  
+  html.dark {
+    .thumbnails {
+      background-color: transparent;
+    }
+  
+    .thumbnail-image-wrapper {
+      background-color: #272727;
+    }
+  
+    .thumbnail-title {
+      color: #f1f1f1;
+    }
+  
+    .thumbnail-channel {
+      color: #aaaaaa;
+    }
+  
+    .thumbnail-card:hover {
+      .thumbnail-channel {
+        color: #ffffff;
+      }
+    }
+  
+    .avatar-circle {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+  
+    .no-results-content {
+      svg {
+        color: #444;
+      }
+  
+      h2 {
+        color: #f1f1f1;
+      }
+  
+      p {
+        color: #aaa;
+      }
+  
+      .search-query {
+        color: #888;
+  
+        strong {
+          color: #f1f1f1;
+        }
+      }
+    }
   }
   
-  .no-results-content h2 {
-    font-size: 24px;
-    font-weight: 500;
-    color: #0f0f0f;
-    margin: 0 0 12px 0;
-  }
+  /* System preference dark mode */
+  @media (prefers-color-scheme: dark) {
+    body:not(.light-mode) {
+      .thumbnail-image-wrapper {
+        background-color: #272727;
+      }
   
-  .no-results-content p {
-    font-size: 16px;
-    color: #606060;
-    margin: 8px 0;
-  }
+      .thumbnail-title {
+        color: #f1f1f1;
+      }
   
-  .no-results-content .search-query {
-    font-size: 14px;
-    color: #888;
-    margin-top: 16px;
-  }
+      .thumbnail-channel {
+        color: #aaaaaa;
+      }
   
-  .no-results-content .search-query strong {
-    color: #0f0f0f;
-  }
-  
-  /* Dark mode: No results message */
-  html.dark .no-results-content svg {
-    color: #444;
-  }
-  
-  html.dark .no-results-content h2 {
-    color: #f1f1f1;
-  }
-  
-  html.dark .no-results-content p {
-    color: #aaa;
-  }
-  
-  html.dark .no-results-content .search-query {
-    color: #888;
-  }
-  
-  html.dark .no-results-content .search-query strong {
-    color: #f1f1f1;
+      .thumbnail-card:hover {
+        .thumbnail-channel {
+          color: #ffffff;
+        }
+      }
+    }
   }

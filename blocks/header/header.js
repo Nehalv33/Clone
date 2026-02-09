@@ -310,11 +310,11 @@ export default async function decorate(block) {
   // Clear block and create header structure
   block.textContent = '';
   
-  const header = document.createElement('header');
-  header.className = 'header-wrapper';
-  header.setAttribute('aria-expanded', 'false');
+  // Create the header wrapper directly in the block (not inside a header tag)
+  block.className = 'header-wrapper';
+  block.setAttribute('aria-expanded', 'false');
   
-  header.innerHTML = `
+  block.innerHTML = `
     <nav class="header-nav">
       <!-- LEFT: Hamburger + Logo -->
       <div class="nav-left">
@@ -326,7 +326,7 @@ export default async function decorate(block) {
         </a>
       </div>
 
-      <!-- CENTER: Search Bar -->
+      <!-- CENTER: Search Bar (Desktop only) -->
       <div class="nav-center">
         <form class="search-form" role="search">
           <input 
@@ -345,8 +345,16 @@ export default async function decorate(block) {
         </form>
       </div>
 
-      <!-- RIGHT: Dark Mode + Profile -->
+      <!-- RIGHT: Mobile Search + Dark Mode + Profile -->
       <div class="nav-right">
+        <!-- Mobile Search Icon -->
+        <button class="mobile-search-icon" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </button>
+
         <button class="dark-mode-toggle" aria-label="Toggle dark mode">
           <svg class="icon-light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
@@ -369,7 +377,31 @@ export default async function decorate(block) {
       </div>
     </nav>
 
-    <!-- SIDEBAR MENU - Now always visible, toggles between collapsed/expanded -->
+    <!-- MOBILE SEARCH POPUP -->
+    <div class="mobile-search-popup">
+      <button class="mobile-search-back" aria-label="Close search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <form class="mobile-search-form" role="search">
+        <input 
+          type="search" 
+          class="mobile-search-input" 
+          placeholder="Search..." 
+          aria-label="Search"
+          autocomplete="off"
+        >
+        <button type="submit" class="mobile-search-submit" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- SIDEBAR MENU -->
     <aside class="sidebar-menu">
       <nav class="sidebar-nav">
         ${menuHTML}
@@ -380,21 +412,26 @@ export default async function decorate(block) {
     <div class="sidebar-overlay"></div>
   `;
 
-  block.append(header);
+  // Event Listeners - use block instead of header
+  const hamburger = block.querySelector('.hamburger-menu');
+  const darkModeToggle = block.querySelector('.dark-mode-toggle');
+  const searchForm = block.querySelector('.nav-center .search-form');
+  const searchInput = block.querySelector('.nav-center .search-input');
+  const sidebarOverlay = block.querySelector('.sidebar-overlay');
+  
+  // Mobile search elements
+  const mobileSearchIcon = block.querySelector('.mobile-search-icon');
+  const mobileSearchPopup = block.querySelector('.mobile-search-popup');
+  const mobileSearchBack = block.querySelector('.mobile-search-back');
+  const mobileSearchForm = block.querySelector('.mobile-search-form');
+  const mobileSearchInput = block.querySelector('.mobile-search-input');
 
-  // Event Listeners
-  const hamburger = header.querySelector('.hamburger-menu');
-  const darkModeToggle = header.querySelector('.dark-mode-toggle');
-  const searchForm = header.querySelector('.nav-center .search-form');
-  const searchInput = header.querySelector('.nav-center .search-input');
-  const sidebarOverlay = header.querySelector('.sidebar-overlay');
-
-  // Hamburger menu toggle - toggles expanded state
+  // Hamburger menu toggle
   hamburger.addEventListener('click', () => {
-    const isExpanded = header.getAttribute('aria-expanded') === 'true';
+    const isExpanded = block.getAttribute('aria-expanded') === 'true';
     const newState = !isExpanded;
     
-    header.setAttribute('aria-expanded', String(newState));
+    block.setAttribute('aria-expanded', String(newState));
     hamburger.setAttribute('aria-expanded', String(newState));
     
     // Only lock body scroll on mobile when expanded
@@ -405,7 +442,7 @@ export default async function decorate(block) {
 
   // Sidebar overlay click (close sidebar on mobile)
   sidebarOverlay.addEventListener('click', () => {
-    header.setAttribute('aria-expanded', 'false');
+    block.setAttribute('aria-expanded', 'false');
     hamburger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   });
@@ -413,7 +450,7 @@ export default async function decorate(block) {
   // Dark mode toggle
   darkModeToggle.addEventListener('click', toggleDarkMode);
 
-  // Search form submission
+  // Desktop search form submission
   if (searchForm) {
     searchForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -421,29 +458,82 @@ export default async function decorate(block) {
     });
   }
 
-  // Real-time search as user types
+  // Real-time desktop search
   if (searchInput) {
     searchInput.addEventListener('input', () => {
       handleSearch(searchInput);
     });
   }
 
+  // Mobile search icon - open popup
+  if (mobileSearchIcon) {
+    mobileSearchIcon.addEventListener('click', () => {
+      mobileSearchPopup.classList.add('active');
+      mobileSearchInput.focus();
+    });
+  }
+
+  // Mobile search back button - close popup
+  if (mobileSearchBack) {
+    mobileSearchBack.addEventListener('click', () => {
+      mobileSearchPopup.classList.remove('active');
+      mobileSearchInput.value = '';
+      // Reset search results
+      const thumbnailCards = document.querySelectorAll('.thumbnail-card');
+      thumbnailCards.forEach(card => {
+        card.style.display = '';
+      });
+      removeNoResultsMessage();
+    });
+  }
+
+  // Mobile search form submission
+  if (mobileSearchForm) {
+    mobileSearchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleSearch(mobileSearchInput);
+    });
+  }
+
+  // Real-time mobile search
+  if (mobileSearchInput) {
+    mobileSearchInput.addEventListener('input', () => {
+      handleSearch(mobileSearchInput);
+    });
+  }
+
   // Close sidebar on ESC key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && header.getAttribute('aria-expanded') === 'true') {
-      header.setAttribute('aria-expanded', 'false');
-      hamburger.setAttribute('aria-expanded', 'false');
-      if (window.innerWidth < 900) {
-        document.body.style.overflow = '';
+    if (e.key === 'Escape') {
+      // Close mobile search popup
+      if (mobileSearchPopup.classList.contains('active')) {
+        mobileSearchPopup.classList.remove('active');
+        mobileSearchInput.value = '';
+        const thumbnailCards = document.querySelectorAll('.thumbnail-card');
+        thumbnailCards.forEach(card => {
+          card.style.display = '';
+        });
+        removeNoResultsMessage();
+      }
+      
+      // Close sidebar
+      if (block.getAttribute('aria-expanded') === 'true') {
+        block.setAttribute('aria-expanded', 'false');
+        hamburger.setAttribute('aria-expanded', 'false');
+        if (window.innerWidth < 900) {
+          document.body.style.overflow = '';
+        }
       }
     }
   });
 
-  // Handle window resize - close overlay on desktop
+  // Handle window resize
   window.addEventListener('resize', () => {
     if (window.innerWidth >= 900) {
       document.body.style.overflow = '';
       sidebarOverlay.style.display = 'none';
+      // Close mobile search on desktop
+      mobileSearchPopup.classList.remove('active');
     } else {
       sidebarOverlay.style.display = '';
     }

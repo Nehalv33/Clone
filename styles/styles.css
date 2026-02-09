@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-:root {
+ :root {
   /* colors */
   --background-color: white;
   --light-color: #f8f8f8;
@@ -37,7 +37,17 @@
   --heading-font-size-xs: 22px;
 
   /* nav height */
-  --nav-height: 64px;
+  --nav-height: 56px;
+}
+
+/* Dark mode CSS variables */
+html.dark {
+  --background-color: #0f0f0f;
+  --light-color: #1a1a1a;
+  --dark-color: #e0e0e0;
+  --text-color: #f1f1f1;
+  --link-color: #5c8fff;
+  --link-hover-color: #7ba3ff;
 }
 
 /* fallback fonts */
@@ -70,14 +80,24 @@
   }
 }
 
+/* Prevent horizontal scrollbar */
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   display: none;
   margin: 0;
+  padding: 0;
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
   line-height: 1.6;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 body.appear {
@@ -142,8 +162,16 @@ pre {
   white-space: pre;
 }
 
+/* Main content container */
+main {
+  box-sizing: border-box;
+  overflow-x: hidden;
+  background-color: var(--background-color);
+}
+
 main > div {
-  margin: 40px 16px;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 input,
@@ -229,23 +257,19 @@ main img {
 
 /* sections */
 main > .section {
-  margin: 40px 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 main > .section > div {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 24px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 main > .section:first-of-type {
   margin-top: 0;
-}
-
-@media (width >= 900px) {
-  main > .section > div {
-    padding: 0 32px;
-  }
 }
 
 /* section metadata */
@@ -254,4 +278,21 @@ main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
   padding: 40px 0;
+}
+
+/* Prevent overflow on all screen sizes */
+* {
+  box-sizing: border-box;
+}
+
+/* Remove default focus outline and add custom subtle ones */
+*:focus-visible {
+  outline: 2px solid var(--link-color);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--link-color);
+  outline-offset: 2px;
 }

@@ -1,13 +1,16 @@
 export default function decorate(block) {
-  // 1. CLEAR PARENT PADDING
+  // Clear parent section padding
   const parentSection = block.closest('.section');
   if (parentSection) {
-    parentSection.style.padding = '0';
-    parentSection.style.maxWidth = 'unset';
-    parentSection.style.margin = '0 auto';
+    const sectionDiv = parentSection.querySelector('div');
+    if (sectionDiv) {
+      sectionDiv.style.padding = '0';
+      sectionDiv.style.maxWidth = 'none';
+      sectionDiv.style.margin = '0';
+    }
   }
 
-  // 2. GET THE IMAGE
+  // Get the image
   const picture = block.querySelector('picture');
   const img = block.querySelector('img');
   
@@ -28,13 +31,11 @@ export default function decorate(block) {
     imageHTML = '<div class="banner-placeholder"></div>';
   }
 
-  // 3. EXTRACT TEXT CONTENT
-  // Get all divs that contain text (not image containers)
+  // Extract text content
   const contentDivs = Array.from(block.querySelectorAll('div')).filter(div => {
     return !div.querySelector('picture') && !div.querySelector('img') && div.textContent.trim();
   });
 
-  // Extract heading and subtext
   let heading = 'Learn To Make Easy Websites On Easy Tutorial';
   let subtext = 'Subscribe now';
 
@@ -45,13 +46,13 @@ export default function decorate(block) {
     subtext = contentDivs[1].textContent.trim();
   }
 
-  // 4. BUILD HTML WITH TEXT OVERLAY
+  // Build HTML with corrected class names matching CSS
   block.innerHTML = `
     <div class="banner-outer">
       <div class="banner-inner">
-        <div class="banner-wrapper">
+        <div class="banner-content-wrapper">
           ${imageHTML}
-          <div class="banner-content">
+          <div class="banner-text-content">
             <h1 class="banner-heading">${heading}</h1>
             <button class="banner-button">${subtext}</button>
           </div>
